@@ -316,3 +316,20 @@ body {
 .stagger-1 { animation-delay: 0.1s; opacity: 0; }
 .stagger-2 { animation-delay: 0.2s; opacity: 0; }
 .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+
+/* Refined Typography (Apple-like) */
+h1, h2, h3, h4, h5, h6, .fw-bold {
+    font-weight: 500 !important;
+    letter-spacing: -0.02em;
+}
+
+body {
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    h1, .hero-title { font-size: 1.75rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.25rem !important; }
+    h4 { font-size: 1.1rem !important; }
+}
