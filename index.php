@@ -4,38 +4,38 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/config/database.php';
 
-// Fetch featured products (latest 4)
-$stmt = $conn->prepare("SELECT * FROM products ORDER BY created_at DESC LIMIT 4");
+// Fetch featured products (latest 8 for a nice carousel)
+$stmt = $conn->prepare("SELECT * FROM products ORDER BY created_at DESC LIMIT 8");
 $stmt->execute();
 $featured_products = $stmt->get_result();
 
 // Fetch categories
-$stmt_cat = $conn->prepare("SELECT * FROM categories LIMIT 6");
+$stmt_cat = $conn->prepare("SELECT * FROM categories LIMIT 8");
 $stmt_cat->execute();
 $categories = $stmt_cat->get_result();
 ?>
 
 <!-- Hero Section -->
 <section class="hero-section">
-    <div class="container">
+    <div class="container fade-in-up stagger-1">
         <h1 class="hero-title">Welcome to Apple Planet</h1>
         <p class="hero-subtitle">Your premier destination for independent, multi-brand electronics. Discover the latest in tech.</p>
         <a href="<?= BASE_URL ?>products.php" class="btn btn-primary btn-lg px-5">Shop Now</a>
     </div>
 </section>
 
-<div class="container my-5">
-    <!-- Categories -->
-    <div class="d-flex justify-content-between align-items-end mb-4">
+<div class="container my-5 overflow-hidden">
+    <!-- Categories (Horizontal Carousel) -->
+    <div class="d-flex justify-content-between align-items-end mb-4 fade-in-up stagger-2">
         <h3 class="fw-bold mb-0">Shop by Category</h3>
     </div>
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mb-5">
+    <div class="horizontal-scroll mb-5 fade-in-up stagger-2">
         <?php while($cat = $categories->fetch_assoc()): ?>
-        <div class="col">
+        <div class="col" style="max-width: 150px; flex: 0 0 auto;">
             <a href="<?= BASE_URL ?>products.php?category=<?= $cat['id'] ?>" class="text-decoration-none">
-                <div class="card h-100 text-center py-3 border-0 bg-light" style="border-radius: 12px; transition: background-color 0.2s;">
-                    <div class="card-body">
-                        <h6 class="card-title mb-0 text-dark"><?= htmlspecialchars($cat['name']) ?></h6>
+                <div class="card h-100 text-center py-3 border-0 bg-light" style="border-radius: 12px; transition: transform 0.2s, background-color 0.2s;">
+                    <div class="card-body px-2 py-3">
+                        <h6 class="card-title mb-0 text-dark small fw-bold"><?= htmlspecialchars($cat['name']) ?></h6>
                     </div>
                 </div>
             </a>
@@ -43,13 +43,13 @@ $categories = $stmt_cat->get_result();
         <?php endwhile; ?>
     </div>
 
-    <!-- Featured Products -->
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <!-- Featured Products (Horizontal Carousel) -->
+    <div class="d-flex justify-content-between align-items-end mb-4 mt-5 fade-in-up stagger-3">
         <h3 class="fw-bold mb-0">New Arrivals</h3>
         <a href="<?= BASE_URL ?>products.php" class="text-decoration-none text-muted small">View all</a>
     </div>
     
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+    <div class="horizontal-scroll pb-4 fade-in-up stagger-3">
         <?php while($product = $featured_products->fetch_assoc()): ?>
         <div class="col">
             <div class="product-card">

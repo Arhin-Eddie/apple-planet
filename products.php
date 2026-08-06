@@ -70,7 +70,7 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
             </div>
 
             <?php if ($products->num_rows > 0): ?>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            <div class="row row-cols-2 row-cols-md-3 g-4">
                 <?php while($product = $products->fetch_assoc()): ?>
                 <div class="col">
                     <div class="product-card">
