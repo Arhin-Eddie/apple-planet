@@ -4,6 +4,8 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/config/database.php';
 
+require_customer();
+
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
 if (empty($cart)) {
@@ -16,38 +18,27 @@ foreach ($cart as $item) {
 }
 
 $error = '';
+$customer_id = $_SESSION['customer_id'];
+
+// Fetch customer details to pre-fill
+$stmt = $conn->prepare("SELECT * FROM customers WHERE id = ?");
+$stmt->bind_param("i", $customer_id);
+$stmt->execute();
+$customer = $stmt->get_result()->fetch_assoc();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first_name = sanitize_input($_POST['first_name'] ?? '');
-    $last_name = sanitize_input($_POST['last_name'] ?? '');
-    $email = sanitize_input($_POST['email'] ?? '');
-    $phone = sanitize_input($_POST['phone'] ?? '');
     $address = sanitize_input($_POST['address'] ?? '');
+    $payment_method = sanitize_input($_POST['payment_method'] ?? '');
     
-    if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) || empty($address)) {
-        $error = "All fields are required.";
+    if (empty($address)) {
+        $error = "Shipping address is required.";
+    } elseif (empty($payment_method)) {
+        $error = "Please select a demo payment method.";
     } else {
         // Begin Transaction
         $conn->begin_transaction();
         
         try {
-            // Check if customer exists
-            $stmt = $conn->prepare("SELECT id FROM customers WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            
-            if ($res->num_rows > 0) {
-                $customer = $res->fetch_assoc();
-                $customer_id = $customer['id'];
-            } else {
-                // Insert new customer
-                $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, email, phone) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $first_name, $last_name, $email, $phone);
-                $stmt->execute();
-                $customer_id = $conn->insert_id;
-            }
-            
             // Insert Order
             $status = 'Pending';
             $stmt = $conn->prepare("INSERT INTO orders (customer_id, address, total_amount, status) VALUES (?, ?, ?, ?)");
@@ -89,41 +80,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="col-lg-7">
             <h3 class="fw-bold mb-4">Checkout</h3>
             
+            <div class="alert alert-info border-0 rounded-4 shadow-sm mb-4">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Demo Mode:</strong> This checkout has been simulated for demonstration purposes. No real payment will be processed.
+            </div>
+            
             <?php if ($error): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             
             <form method="POST" action="checkout.php">
                 <h5 class="fw-bold mb-3 mt-4">Contact Information</h5>
-                <div class="row g-3">
+                <div class="row g-3 text-muted small">
                     <div class="col-sm-6">
                         <label class="form-label">First Name</label>
-                        <input type="text" name="first_name" class="form-control" required>
+                        <input type="text" class="form-control bg-light" value="<?= htmlspecialchars($customer['first_name']) ?>" disabled>
                     </div>
                     <div class="col-sm-6">
                         <label class="form-label">Last Name</label>
-                        <input type="text" name="last_name" class="form-control" required>
+                        <input type="text" class="form-control bg-light" value="<?= htmlspecialchars($customer['last_name']) ?>" disabled>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-12">
                         <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="form-label">Phone</label>
-                        <input type="text" name="phone" class="form-control" required>
+                        <input type="email" class="form-control bg-light" value="<?= htmlspecialchars($customer['email']) ?>" disabled>
                     </div>
                 </div>
                 
                 <h5 class="fw-bold mb-3 mt-5">Shipping Address</h5>
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label">Full Address</label>
-                        <textarea name="address" class="form-control" rows="3" required></textarea>
+                        <label class="form-label small fw-bold text-muted">Full Address *</label>
+                        <textarea name="address" class="form-control" rows="3" required placeholder="123 Apple Street, Tech City, TC 90210"></textarea>
+                    </div>
+                </div>
+                
+                <h5 class="fw-bold mb-3 mt-5">Payment Method</h5>
+                <div class="bg-light p-4 rounded-4 border border-light">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="payment_method" id="pay1" value="Credit Card" required>
+                        <label class="form-check-label fw-bold" for="pay1">
+                            <i class="bi bi-credit-card me-2 text-primary"></i> Credit/Debit Card (Demo)
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="payment_method" id="pay2" value="Mobile Money">
+                        <label class="form-check-label fw-bold" for="pay2">
+                            <i class="bi bi-phone me-2 text-primary"></i> Mobile Money (Demo)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="pay3" value="Cash on Delivery">
+                        <label class="form-check-label fw-bold" for="pay3">
+                            <i class="bi bi-cash-stack me-2 text-primary"></i> Cash on Delivery (Demo)
+                        </label>
                     </div>
                 </div>
                 
                 <div class="mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg w-100">Place Order</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Place Order</button>
                 </div>
             </form>
         </div>
@@ -149,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <div class="d-flex justify-content-between mt-4">
                         <span class="fw-bold fs-5">Total</span>
-                        <span class="fw-bold fs-5"><?= format_price($subtotal) ?></span>
+                        <span class="fw-bold fs-5 text-primary"><?= format_price($subtotal) ?></span>
                     </div>
                 </div>
             </div>

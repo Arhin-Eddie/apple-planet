@@ -20,6 +20,16 @@ function require_admin() {
     }
 }
 
+function is_customer_logged_in() {
+    return isset($_SESSION['customer_id']);
+}
+
+function require_customer() {
+    if (!is_customer_logged_in()) {
+        redirect(BASE_URL . 'login.php');
+    }
+}
+
 function format_price($price) {
     global $global_settings;
     $symbol = $global_settings['currency_symbol'] ?? '$';
