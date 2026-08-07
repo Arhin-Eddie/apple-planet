@@ -32,6 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle file upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../assets/uploads/products/';
+        
+        // Create directory if it doesn't exist
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        
         $tmp_name = $_FILES['image']['tmp_name'];
         $name = basename($_FILES['image']['name']);
         
@@ -70,9 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" enctype="multipart/form-data">
         <div class="row g-4">
             <div class="col-md-8">
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Product Name *</label>
-                    <input type="text" name="product_name" class="form-control" value="<?= htmlspecialchars($product['product_name']) ?>" required>
+                <div class="form-floating mb-3">
+                    <input type="text" name="product_name" class="form-control" id="floatingName" placeholder="Product Name" value="<?= htmlspecialchars($product['product_name']) ?>" required>
+                    <label for="floatingName">Product Name *</label>
                 </div>
                 
                 <div class="mb-3">
@@ -87,45 +93,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Brand *</label>
-                    <input type="text" name="brand" class="form-control" value="<?= htmlspecialchars($product['brand']) ?>" required>
+                <div class="form-floating mb-3">
+                    <input type="text" name="brand" class="form-control" id="floatingBrand" placeholder="Brand" value="<?= htmlspecialchars($product['brand']) ?>" required>
+                    <label for="floatingBrand">Brand *</label>
                 </div>
                 
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Category *</label>
-                    <select name="category_id" class="form-select" required>
+                <div class="form-floating mb-3">
+                    <select name="category_id" class="form-select" id="floatingCategory" required>
                         <option value="">Select Category</option>
                         <?php while($cat = $categories->fetch_assoc()): ?>
                             <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $product['category_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                         <?php endwhile; ?>
                     </select>
+                    <label for="floatingCategory">Category *</label>
                 </div>
                 
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Price ($) *</label>
-                    <input type="number" name="price" class="form-control" step="0.01" min="0" value="<?= htmlspecialchars($product['price']) ?>" required>
+                <div class="form-floating mb-3">
+                    <input type="number" name="price" class="form-control" id="floatingPrice" placeholder="Price" step="0.01" min="0" value="<?= htmlspecialchars($product['price']) ?>" required>
+                    <label for="floatingPrice">Price ($) *</label>
                 </div>
                 
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Quantity *</label>
-                    <input type="number" name="quantity" class="form-control" value="<?= htmlspecialchars($product['quantity']) ?>" min="0" required>
+                <div class="form-floating mb-3">
+                    <input type="number" name="quantity" class="form-control" id="floatingQuantity" placeholder="Quantity" value="<?= htmlspecialchars($product['quantity']) ?>" min="0" required>
+                    <label for="floatingQuantity">Quantity *</label>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">Product Image</label>
-                    <?php if($product['image']): ?>
-                        <div class="mb-2">
-                            <img src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['image']) ?>" alt="Current Image" style="height: 60px; border-radius: 4px; border: 1px solid var(--border);">
-                        </div>
-                    <?php endif; ?>
-                    <input type="file" name="image" class="form-control" accept="image/*">
-                    <div class="form-text small">Leave blank to keep current image.</div>
+                    <label class="form-label text-muted small fw-bold mb-2">Product Image</label>
+                    
+                    <div id="image-dropzone" class="image-dropzone mb-2">
+                        <i class="bi bi-image text-muted fs-3 mb-2 d-block"></i>
+                        <span class="text-muted small fw-bold">Click to upload or drag and drop</span>
+                        <br>
+                        <span class="text-muted" style="font-size: 0.75rem;">JPG, PNG, WebP (Max 2MB)</span>
+                    </div>
+                    
+                    <input type="file" name="image" id="image-input" class="d-none" accept="image/jpeg, image/png, image/webp">
+                    
+                    <div id="image-preview-container" class="d-flex align-items-center mt-2 p-2 bg-light rounded border border-light">
+                        <?php if($product['image']): ?>
+                            <img id="image-preview" src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['image']) ?>" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" class="me-3 border">
+                            <span id="image-name" class="text-muted small text-truncate" style="max-width: 200px;">Current Image</span>
+                        <?php else: ?>
+                            <img id="image-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; display: none;" class="me-3 border">
+                            <span id="image-name" class="text-muted small text-truncate" style="max-width: 200px;">No image selected</span>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Badge (Optional)</label>
-                    <input type="text" name="badge" class="form-control" placeholder="e.g. NEW, SALE" value="<?= htmlspecialchars($product['badge'] ?? '') ?>">
+                <div class="form-floating mb-4">
+                    <input type="text" name="badge" class="form-control" id="floatingBadge" placeholder="Badge" value="<?= htmlspecialchars($product['badge'] ?? '') ?>">
+                    <label for="floatingBadge">Badge (Optional, e.g. SALE)</label>
                 </div>
                 
                 <div class="form-check mb-4">
@@ -140,5 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 </div>
+
+<!-- Scripts -->
+<script src="<?= BASE_URL ?>admin/assets/js/product-form.js"></script>
 
 <?php require_once __DIR__ . '/admin_footer.php'; ?>

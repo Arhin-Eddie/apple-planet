@@ -22,6 +22,25 @@ require_admin();
         .admin-sidebar { min-height: 100vh; background-color: var(--background); border-right: 1px solid var(--border); }
         .admin-sidebar .nav-link { color: var(--muted); font-weight: 500; padding: 0.75rem 1.25rem; border-radius: 6px; margin-bottom: 0.25rem; }
         .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active { background-color: var(--secondary-bg); color: var(--foreground); }
+        
+        /* Dropzone Styling */
+        .image-dropzone {
+            border: 2px dashed #d1d5db;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .image-dropzone:hover, .dropzone-highlight {
+            border-color: #9ca3af;
+            background-color: #f3f4f6;
+        }
+        .form-floating > label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
