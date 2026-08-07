@@ -105,6 +105,7 @@ CREATE TABLE `products` (
   `badge` varchar(20) DEFAULT NULL,
   `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `image` varchar(255) DEFAULT NULL,
+  `hover_image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

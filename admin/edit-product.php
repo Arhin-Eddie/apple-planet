@@ -27,32 +27,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $badge = sanitize_input($_POST['badge'] ?? '');
     $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     
-    $image = $product['image'];
+    // Fetch current product to handle image replacement
+    $stmt = $conn->prepare("SELECT image, hover_image FROM products WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $current_product = $stmt->get_result()->fetch_assoc();
     
-    // Handle file upload
+    $image = $current_product['image'];
+    $hover_image = $current_product['hover_image'] ?? null;
+    
+    // Handle primary file upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../assets/uploads/products/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
         
-        // Create directory if it doesn't exist
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-        
-        $tmp_name = $_FILES['image']['tmp_name'];
         $name = basename($_FILES['image']['name']);
+        $new_name = time() . '_main_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
         
-        $new_name = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
-        
-        if (move_uploaded_file($tmp_name, $upload_dir . $new_name)) {
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $new_name)) {
             $image = $new_name;
+            // Optional: delete old image here
+        }
+    }
+
+    // Handle hover image upload
+    if (isset($_FILES['hover_image']) && $_FILES['hover_image']['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = __DIR__ . '/../assets/uploads/products/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+        
+        $name = basename($_FILES['hover_image']['name']);
+        $new_name = time() . '_hover_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
+        
+        if (move_uploaded_file($_FILES['hover_image']['tmp_name'], $upload_dir . $new_name)) {
+            $hover_image = $new_name;
+            // Optional: delete old hover image here
         }
     }
     
     if (empty($product_name) || empty($price) || empty($category_id) || empty($brand)) {
         $error = "Category, Brand, Name, and Price are required.";
     } else {
-        $stmt = $conn->prepare("UPDATE products SET category_id=?, brand=?, product_name=?, description=?, specifications=?, price=?, quantity=?, badge=?, is_featured=?, image=? WHERE id=?");
-        $stmt->bind_param("isssssisisi", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image, $id);
+        $stmt = $conn->prepare("UPDATE products SET category_id=?, brand=?, product_name=?, description=?, specifications=?, price=?, quantity=?, badge=?, is_featured=?, image=?, hover_image=? WHERE id=?");
+        $stmt->bind_param("isssssisissi", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image, $hover_image, $id);
         
         if ($stmt->execute()) {
             redirect(BASE_URL . 'admin/products.php?success=1');
@@ -119,7 +135,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold mb-2">Product Image</label>
+                    <label class="form-label text-muted small fw-bold mb-0">Primary Image *</label>
+                    <div class="form-text small mb-2 mt-0">Main product image</div>
                     
                     <div id="image-dropzone" class="image-dropzone mb-2">
                         <i class="bi bi-image text-muted fs-3 mb-2 d-block"></i>
@@ -137,6 +154,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php else: ?>
                             <img id="image-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; display: none;" class="me-3 border">
                             <span id="image-name" class="text-muted small text-truncate" style="max-width: 200px;">No image selected</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold mb-0">Hover Image (Optional)</label>
+                    <div class="form-text small mb-2 mt-0">Shown when users hover over the product</div>
+                    
+                    <div id="hover-dropzone" class="image-dropzone mb-2">
+                        <i class="bi bi-front text-muted fs-3 mb-2 d-block"></i>
+                        <span class="text-muted small fw-bold">Click to upload or drag and drop</span>
+                        <br>
+                        <span class="text-muted" style="font-size: 0.75rem;">JPG, PNG, WebP (Max 2MB)</span>
+                    </div>
+                    
+                    <input type="file" name="hover_image" id="hover-input" class="d-none" accept="image/jpeg, image/png, image/webp">
+                    
+                    <div id="hover-preview-container" class="d-flex align-items-center mt-2 p-2 bg-light rounded border border-light">
+                        <?php if(isset($product['hover_image']) && $product['hover_image']): ?>
+                            <img id="hover-preview" src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['hover_image']) ?>" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" class="me-3 border">
+                            <span id="hover-name" class="text-muted small text-truncate" style="max-width: 200px;">Current Hover Image</span>
+                        <?php else: ?>
+                            <img id="hover-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; display: none;" class="me-3 border">
+                            <span id="hover-name" class="text-muted small text-truncate" style="max-width: 200px;">No hover image</span>
                         <?php endif; ?>
                     </div>
                 </div>

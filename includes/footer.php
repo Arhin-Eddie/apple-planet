@@ -23,7 +23,7 @@
                         <div id="qv-price" class="fs-4 fw-bold mb-4"></div>
                         <p id="qv-description" class="text-muted small mb-4" style="line-height: 1.6;"></p>
                         
-                        <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="mt-auto">
+                        <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="add-to-cart-form mt-auto">
                             <input type="hidden" name="action" value="add">
                             <input type="hidden" name="product_id" id="qv-id" value="">
                             <input type="hidden" name="quantity" value="1">

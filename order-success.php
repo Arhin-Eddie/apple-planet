@@ -28,32 +28,61 @@ if ($res->num_rows === 0) {
 $order = $res->fetch_assoc();
 ?>
 
-<div class="container my-5 py-5 text-center">
-    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
-    <h1 class="fw-bold mt-4 mb-3">Order Successfully Placed</h1>
-    <p class="text-muted fs-5 mb-5">Thank you for your purchase. Your order number is <strong>#<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></strong>.</p>
+<style>
+.success-checkmark {
+    font-size: 5rem;
+    animation: scaleFadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+@keyframes scaleFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
+
+<div class="container my-5 py-5 text-center fade-in-up">
+    <i class="bi bi-check-circle-fill text-success success-checkmark mb-2 d-inline-block"></i>
+    <h1 class="fw-bold mt-3 mb-2" style="letter-spacing: -0.5px;">Order Successfully Placed</h1>
+    <p class="text-muted fs-5 mb-5">Thank you for your purchase.</p>
     
-    <div class="card mx-auto bg-light border-0 text-start" style="max-width: 500px; border-radius: 8px;">
-        <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">Order Details</h5>
-            <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Total Amount</span>
-                <span class="fw-bold"><?= format_price($order['total_amount']) ?></span>
+    <div class="card mx-auto bg-white shadow-sm text-start" style="max-width: 450px; border-radius: 12px; border: 1px solid var(--border);">
+        <div class="card-body p-4 p-md-5">
+            <h5 class="fw-bold mb-4 text-center">Order Receipt</h5>
+            
+            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                <span class="text-muted small text-uppercase fw-bold">Order Number</span>
+                <span class="fw-bold">#<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></span>
             </div>
-            <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Date</span>
+            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                <span class="text-muted small text-uppercase fw-bold">Date</span>
                 <span class="fw-bold"><?= date('M j, Y', strtotime($order['order_date'])) ?></span>
             </div>
-            <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Confirmation Email</span>
-                <span class="fw-bold"><?= htmlspecialchars($order['email']) ?></span>
+            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                <span class="text-muted small text-uppercase fw-bold">Payment Method</span>
+                <span class="fw-bold">Demo Payment</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                <span class="text-muted small text-uppercase fw-bold">Order Status</span>
+                <span class="badge bg-primary rounded-pill px-3">Pending</span>
+            </div>
+            <div class="d-flex justify-content-between pt-2">
+                <span class="text-dark fw-bold">Total Amount</span>
+                <span class="fw-bold fs-5 text-primary"><?= format_price($order['total_amount']) ?></span>
             </div>
         </div>
     </div>
     
     <div class="mt-5">
-        <a href="<?= BASE_URL ?>" class="btn btn-outline-primary px-4 me-2">Back to Home</a>
-        <a href="<?= BASE_URL ?>products.php" class="btn btn-primary px-4">Continue Shopping</a>
+        <a href="<?= BASE_URL ?>" class="btn btn-outline-secondary px-4 py-2 me-2 rounded-1 fw-bold tracking-wider">BACK TO HOME</a>
+        <a href="<?= BASE_URL ?>products.php" class="btn btn-primary px-4 py-2 rounded-1 fw-bold tracking-wider">CONTINUE SHOPPING</a>
     </div>
 </div>
 

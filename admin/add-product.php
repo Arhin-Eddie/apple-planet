@@ -22,28 +22,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle file upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../assets/uploads/products/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
         
-        // Create directory if it doesn't exist
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-        
-        $tmp_name = $_FILES['image']['tmp_name'];
         $name = basename($_FILES['image']['name']);
+        $new_name = time() . '_main_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
         
-        // simple unique name
-        $new_name = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
-        
-        if (move_uploaded_file($tmp_name, $upload_dir . $new_name)) {
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $new_name)) {
             $image = $new_name;
+        }
+    }
+    
+    // Handle hover image upload
+    $hover_image = '';
+    if (isset($_FILES['hover_image']) && $_FILES['hover_image']['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = __DIR__ . '/../assets/uploads/products/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+        
+        $name = basename($_FILES['hover_image']['name']);
+        $new_name = time() . '_hover_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $name);
+        
+        if (move_uploaded_file($_FILES['hover_image']['tmp_name'], $upload_dir . $new_name)) {
+            $hover_image = $new_name;
         }
     }
     
     if (empty($product_name) || empty($price) || empty($category_id) || empty($brand)) {
         $error = "Category, Brand, Name, and Price are required.";
     } else {
-        $stmt = $conn->prepare("INSERT INTO products (category_id, brand, product_name, description, specifications, price, quantity, badge, is_featured, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssssisis", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image);
+        $stmt = $conn->prepare("INSERT INTO products (category_id, brand, product_name, description, specifications, price, quantity, badge, is_featured, image, hover_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssssisiss", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image, $hover_image);
         
         if ($stmt->execute()) {
             redirect(BASE_URL . 'admin/products.php?success=1');
@@ -110,7 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold mb-2">Product Image</label>
+                    <label class="form-label text-muted small fw-bold mb-0">Primary Image *</label>
+                    <div class="form-text small mb-2 mt-0">Main product image</div>
                     
                     <div id="image-dropzone" class="image-dropzone mb-2">
                         <i class="bi bi-image text-muted fs-3 mb-2 d-block"></i>
@@ -119,11 +127,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="text-muted" style="font-size: 0.75rem;">JPG, PNG, WebP (Max 2MB)</span>
                     </div>
                     
-                    <input type="file" name="image" id="image-input" class="d-none" accept="image/jpeg, image/png, image/webp">
+                    <input type="file" name="image" id="image-input" class="d-none" accept="image/jpeg, image/png, image/webp" required>
                     
                     <div id="image-preview-container" class="d-none d-flex align-items-center mt-2 p-2 bg-light rounded border border-light">
                         <img id="image-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" class="me-3 border">
                         <span id="image-name" class="text-muted small text-truncate" style="max-width: 200px;"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold mb-0">Hover Image (Optional)</label>
+                    <div class="form-text small mb-2 mt-0">Shown when users hover over the product</div>
+                    
+                    <div id="hover-dropzone" class="image-dropzone mb-2">
+                        <i class="bi bi-front text-muted fs-3 mb-2 d-block"></i>
+                        <span class="text-muted small fw-bold">Click to upload or drag and drop</span>
+                        <br>
+                        <span class="text-muted" style="font-size: 0.75rem;">JPG, PNG, WebP (Max 2MB)</span>
+                    </div>
+                    
+                    <input type="file" name="hover_image" id="hover-input" class="d-none" accept="image/jpeg, image/png, image/webp">
+                    
+                    <div id="hover-preview-container" class="d-none d-flex align-items-center mt-2 p-2 bg-light rounded border border-light">
+                        <img id="hover-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" class="me-3 border">
+                        <span id="hover-name" class="text-muted small text-truncate" style="max-width: 200px;"></span>
                     </div>
                 </div>
                 

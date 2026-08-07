@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Buffer output to prevent "headers already sent" errors during redirects
 // includes/header.php
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../config/session.php';

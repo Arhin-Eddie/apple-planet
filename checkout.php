@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Clear cart
             $_SESSION['cart'] = [];
             
-            redirect(BASE_URL . 'order-success.php?id=' . $order_id);
+            redirect(BASE_URL . 'processing.php?id=' . $order_id);
             
         } catch (Exception $e) {
             $conn->rollback();
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 
                 <div class="mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Place Order</button>
+                    <button type="submit" id="placeOrderBtn" class="btn btn-primary btn-lg w-100 fw-bold" onclick="this.innerHTML='Processing...'; this.form.submit(); this.disabled=true;">Place Order</button>
                 </div>
             </form>
         </div>

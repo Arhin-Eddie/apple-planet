@@ -80,16 +80,23 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                             <?php endif; ?>
                             <a href="<?= BASE_URL ?>product.php?id=<?= $product['id'] ?>">
                                 <?php if($product['image']): ?>
-                                <img src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>" onerror="this.src='https://placehold.co/400x400/eeeeee/cccccc?text=No+Image'">
+                                <div class="product-image-container">
+                                    <img src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>" class="main-img" onerror="this.src='https://placehold.co/400x400/eeeeee/cccccc?text=No+Image'">
+                                    <?php if(isset($product['hover_image']) && $product['hover_image']): ?>
+                                    <img src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['hover_image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?> Hover" class="hover-img">
+                                    <?php endif; ?>
+                                </div>
                                 <?php else: ?>
-                                <img src="https://placehold.co/400x400/eeeeee/cccccc?text=No+Image" alt="Placeholder">
+                                <div class="product-image-container">
+                                    <img src="https://placehold.co/400x400/eeeeee/cccccc?text=No+Image" alt="Placeholder" class="main-img">
+                                </div>
                                 <?php endif; ?>
                             </a>
                             <div class="product-actions">
                                 <button type="button" class="action-btn quick-view-btn" data-id="<?= $product['id'] ?>" title="Quick View">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="m-0">
+                                <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="add-to-cart-form m-0">
                                     <input type="hidden" name="action" value="add">
                                     <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
                                     <input type="hidden" name="quantity" value="1">
