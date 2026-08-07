@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             fetch(form.action, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'same-origin'
             })
             .then(response => response.text())
             .then(data => {
