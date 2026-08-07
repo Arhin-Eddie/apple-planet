@@ -33,4 +33,41 @@ document.addEventListener('DOMContentLoaded', () => {
             badge.textContent = current + added;
         }
     }
+
+    // Quick View Logic
+    const quickViewBtns = document.querySelectorAll('.quick-view-btn');
+    const quickViewModal = document.getElementById('quickViewModal');
+    
+    if (quickViewModal) {
+        const bsModal = new bootstrap.Modal(quickViewModal);
+        
+        quickViewBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = btn.getAttribute('data-id');
+                
+                // Assuming BASE_URL is the root. We can use relative path if in root, but it's safer to extract from window location or hardcode if in subdirectory.
+                // Since this runs in XAMPP where path varies, we use a relative path trick or inject BASE_URL globally.
+                // We injected BASE_URL in header.php
+                fetch(BASE_URL + 'api/get_product.php?id=' + productId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        
+                        document.getElementById('qv-image').src = data.image ? data.image_url : 'https://placehold.co/400x400/eeeeee/cccccc?text=No+Image';
+                        document.getElementById('qv-brand').textContent = data.brand;
+                        document.getElementById('qv-title').textContent = data.product_name;
+                        document.getElementById('qv-price').textContent = data.formatted_price;
+                        document.getElementById('qv-description').textContent = data.description;
+                        document.getElementById('qv-id').value = data.id;
+                        
+                        bsModal.show();
+                    })
+                    .catch(err => console.error('Error fetching quick view:', err));
+            });
+        });
+    }
 });

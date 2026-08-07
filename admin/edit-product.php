@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $specifications = sanitize_input($_POST['specifications']);
     $price = (float)$_POST['price'];
     $quantity = (int)$_POST['quantity'];
+    $badge = sanitize_input($_POST['badge'] ?? '');
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     
     $image = $product['image'];
     
@@ -43,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($product_name) || empty($price) || empty($category_id) || empty($brand)) {
         $error = "Category, Brand, Name, and Price are required.";
     } else {
-        $stmt = $conn->prepare("UPDATE products SET category_id=?, brand=?, product_name=?, description=?, specifications=?, price=?, quantity=?, image=? WHERE id=?");
-        $stmt->bind_param("isssssisi", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $image, $id);
+        $stmt = $conn->prepare("UPDATE products SET category_id=?, brand=?, product_name=?, description=?, specifications=?, price=?, quantity=?, badge=?, is_featured=?, image=? WHERE id=?");
+        $stmt->bind_param("isssssisisi", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image, $id);
         
         if ($stmt->execute()) {
             redirect(BASE_URL . 'admin/products.php?success=1');
@@ -119,6 +121,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
                     <input type="file" name="image" class="form-control" accept="image/*">
                     <div class="form-text small">Leave blank to keep current image.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">Badge (Optional)</label>
+                    <input type="text" name="badge" class="form-control" placeholder="e.g. NEW, SALE" value="<?= htmlspecialchars($product['badge'] ?? '') ?>">
+                </div>
+                
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured" value="1" <?= isset($product['is_featured']) && $product['is_featured'] ? 'checked' : '' ?>>
+                    <label class="form-check-label text-muted small fw-bold" for="is_featured">
+                        Show in Hero Slider
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn btn-primary w-100 py-2">Update Product</button>

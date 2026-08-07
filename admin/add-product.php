@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $specifications = sanitize_input($_POST['specifications']);
     $price = (float)$_POST['price'];
     $quantity = (int)$_POST['quantity'];
+    $badge = sanitize_input($_POST['badge'] ?? '');
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     
     $image = '';
     
@@ -34,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($product_name) || empty($price) || empty($category_id) || empty($brand)) {
         $error = "Category, Brand, Name, and Price are required.";
     } else {
-        $stmt = $conn->prepare("INSERT INTO products (category_id, brand, product_name, description, specifications, price, quantity, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssssis", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $image);
+        $stmt = $conn->prepare("INSERT INTO products (category_id, brand, product_name, description, specifications, price, quantity, badge, is_featured, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssssisis", $category_id, $brand, $product_name, $description, $specifications, $price, $quantity, $badge, $is_featured, $image);
         
         if ($stmt->execute()) {
             redirect(BASE_URL . 'admin/products.php?success=1');
@@ -104,6 +106,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mb-4">
                     <label class="form-label text-muted small fw-bold">Product Image</label>
                     <input type="file" name="image" class="form-control" accept="image/*">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">Badge (Optional)</label>
+                    <input type="text" name="badge" class="form-control" placeholder="e.g. NEW, SALE">
+                </div>
+                
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured" value="1">
+                    <label class="form-check-label text-muted small fw-bold" for="is_featured">
+                        Show in Hero Slider
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn btn-primary w-100 py-2">Save Product</button>

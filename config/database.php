@@ -10,3 +10,16 @@ try {
 } catch (mysqli_sql_exception $e) {
     die("Database Connection Failed: " . $e->getMessage());
 }
+
+// Fetch global settings
+$global_settings = ['currency_symbol' => '$'];
+try {
+    $res = $conn->query("SELECT setting_key, setting_value FROM settings");
+    if ($res) {
+        while ($row = $res->fetch_assoc()) {
+            $global_settings[$row['setting_key']] = $row['setting_value'];
+        }
+    }
+} catch (Exception $e) {
+    // Ignore if table doesn't exist yet
+}

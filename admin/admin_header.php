@@ -54,6 +54,11 @@ require_admin();
                                 <i class="fs-5 bi-tags"></i> <span class="ms-1 d-none d-sm-inline">Categories</span>
                             </a>
                         </li>
+                        <li class="nav-item w-100">
+                            <a href="<?= BASE_URL ?>admin/settings.php" class="nav-link px-0 align-middle">
+                                <i class="fs-5 bi-gear"></i> <span class="ms-1 d-none d-sm-inline">Settings</span>
+                            </a>
+                        </li>
                     </ul>
                     <hr>
                     <div class="dropdown pb-4 w-100 text-center text-sm-start mt-auto">
@@ -63,6 +68,7 @@ require_admin();
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
                             <li><a class="dropdown-item" href="<?= BASE_URL ?>" target="_blank">View Store</a></li>
+                            <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/profile.php">Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/logout.php">Sign out</a></li>
                         </ul>

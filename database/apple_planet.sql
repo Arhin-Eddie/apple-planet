@@ -101,6 +101,8 @@ CREATE TABLE `products` (
   `specifications` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 0,
+  `badge` varchar(20) DEFAULT NULL,
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -109,27 +111,27 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `category_id`, `brand`, `product_name`, `description`, `specifications`, `price`, `quantity`, `image`, `created_at`) VALUES
-(1, 1, 'Apple', 'iPhone 15 Pro Max', 'Forged in titanium and featuring the groundbreaking A17 Pro chip, a customizable Action button, and the most powerful iPhone camera system ever.', 'Display: 6.7-inch Super Retina XDR\r\nChip: A17 Pro\r\nStorage: 256GB\r\nCamera: 48MP Main | Ultra Wide | Telephoto', 1199.00, 50, 'iphone_15_pro_max.jpg', '2026-08-01 10:00:00'),
-(2, 2, 'Apple', 'MacBook Pro 16\"', 'The most advanced Mac laptop for demanding workflows. Powered by M3 Max for massive performance and capabilities.', 'Display: 16.2-inch Liquid Retina XDR\r\nChip: M3 Max\r\nMemory: 36GB\r\nStorage: 1TB SSD', 3499.00, 20, 'macbook_pro_16.jpg', '2026-08-01 10:05:00'),
-(3, 3, 'Apple', 'iPad Pro 12.9\"', 'The ultimate iPad experience with the most advanced display, M2 chip, and blazing-fast wireless connectivity.', 'Display: 12.9-inch Liquid Retina XDR\r\nChip: M2\r\nStorage: 512GB\r\nConnectivity: Wi-Fi + Cellular', 1299.00, 30, 'ipad_pro_12_9.jpg', '2026-08-01 10:10:00'),
-(4, 4, 'Apple', 'Apple Watch Ultra 2', 'The most rugged and capable Apple Watch. Designed for outdoor adventures and supercharged workouts with a lightweight titanium case.', 'Case: 49mm Titanium\r\nDisplay: Always-On Retina up to 3000 nits\r\nWater Resistance: 100m', 799.00, 45, 'apple_watch_ultra_2.jpg', '2026-08-01 10:15:00'),
-(5, 5, 'Apple', 'AirPods Pro (2nd Gen)', 'Re-engineered for even richer audio. Next-level Active Noise Cancellation and Adaptive Transparency reduce more external noise.', 'Audio: Spatial Audio with dynamic head tracking\r\nBattery: Up to 6 hours listening time\r\nCharging: MagSafe Charging Case', 249.00, 100, 'airpods_pro_2.jpg', '2026-08-01 10:20:00'),
-(6, 6, 'Samsung', 'Galaxy S24 Ultra', 'Welcome to the era of mobile AI. With Galaxy S24 Ultra in your hands, you can unleash whole new levels of creativity and productivity.', 'Display: 6.8-inch Dynamic AMOLED 2X\r\nProcessor: Snapdragon 8 Gen 3\r\nCamera: 200MP Main\r\nS Pen: Built-in', 1299.00, 40, 'galaxy_s24_ultra.jpg', '2026-08-01 10:25:00'),
-(7, 6, 'Google', 'Pixel 8 Pro', 'The all-pro phone engineered by Google. It\'s sleek, sophisticated, and packed with the latest AI features.', 'Display: 6.7-inch Super Actua\r\nProcessor: Google Tensor G3\r\nCamera: 50MP Main\r\nBattery: 5050 mAh', 999.00, 35, 'pixel_8_pro.jpg', '2026-08-01 10:30:00'),
-(8, 7, 'Anker', 'Prime 20,000mAh Power Bank', 'Ultra-high capacity power bank with 200W total output, capable of charging two laptops simultaneously.', 'Capacity: 20,000mAh\r\nOutput: 200W Total (2x USB-C, 1x USB-A)\r\nDisplay: Smart Digital Display', 129.99, 80, 'anker_prime_20k.jpg', '2026-08-01 10:35:00'),
-(9, 7, 'Apple', 'MagSafe Charger', 'The MagSafe Charger makes wireless charging a snap. The perfectly aligned magnets attach to your iPhone.', 'Output: Up to 15W\r\nConnection: USB-C', 39.00, 150, 'magsafe_charger.jpg', '2026-08-01 10:40:00'),
-(10, 8, 'Sony', 'WH-1000XM5', 'Industry-leading noise cancelation optimized to you. Magnificent sound, engineered to perfection.', 'Battery: Up to 30 hours\r\nNoise Cancellation: Dual Noise Sensor technology\r\nMicrophone: 4 beamforming mics', 398.00, 25, 'sony_wh1000xm5.jpg', '2026-08-01 10:45:00'),
-(11, 8, 'JBL', 'Flip 6', 'Bold sound for every adventure. The JBL Flip 6 delivers powerful JBL Original Pro Sound with exceptional clarity.', 'Waterproof: IP67\r\nBattery Life: Up to 12 hours\r\nOutput Power: 20W RMS', 129.95, 60, 'jbl_flip_6.jpg', '2026-08-01 10:50:00'),
-(12, 9, 'Logitech', 'G Pro X Superlight', 'Less than 63 grams. Advanced low-latency LIGHTSPEED wireless. Sub-micron precision with HERO 25K sensor.', 'Weight: <63g\r\nSensor: HERO 25K\r\nBattery Life: 70 hours', 159.99, 40, 'logitech_gpro_x.jpg', '2026-08-01 10:55:00'),
-(13, 9, 'Sony', 'PlayStation 5 Console', 'Experience lightning-fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback.', 'Storage: 825GB SSD\r\nOutput: Up to 4K 120Hz', 499.99, 15, 'ps5_console.jpg', '2026-08-01 11:00:00'),
-(14, 10, 'Google', 'Nest Hub (2nd Gen)', 'Meet the second-gen Nest Hub from Google, the center of your helpful home. With a 7-inch display and improved speaker.', 'Display: 7-inch touchscreen\r\nFeatures: Sleep Sensing, Google Assistant', 99.99, 50, 'nest_hub_2.jpg', '2026-08-01 11:05:00'),
-(15, 11, 'Garmin', 'Fenix 7X Pro', 'Ultimate multisport GPS smartwatch with a large 1.4” display, built-in LED flashlight and solar charging lens.', 'Display: 1.4-inch Memory-in-Pixel\r\nBattery: Up to 37 days (Solar)\r\nWater Rating: 10 ATM', 899.99, 20, 'garmin_fenix_7x.jpg', '2026-08-01 11:10:00'),
-(16, 1, 'Apple', 'iPhone 15', 'Dynamic Island stays on top of it all. New 48MP Main camera. USB-C. All in a durable color-infused glass and aluminum design.', 'Display: 6.1-inch Super Retina XDR\r\nChip: A16 Bionic\r\nStorage: 128GB', 799.00, 60, 'iphone_15.jpg', '2026-08-01 11:15:00'),
-(17, 2, 'Apple', 'MacBook Air M3', 'Lean. Mean. M3 machine. The MacBook Air breezes through work and play, now featuring the blazing-fast M3 chip.', 'Display: 13.6-inch Liquid Retina\r\nChip: M3\r\nMemory: 8GB\r\nStorage: 256GB SSD', 1099.00, 40, 'macbook_air_m3.jpg', '2026-08-01 11:20:00'),
-(18, 3, 'Apple', 'iPad Air', 'Supercharged by M1. 10.9-inch Liquid Retina display. Supports Apple Pencil (2nd gen).', 'Display: 10.9-inch Liquid Retina\r\nChip: M1\r\nStorage: 64GB', 599.00, 50, 'ipad_air.jpg', '2026-08-01 11:25:00'),
-(19, 4, 'Apple', 'Apple Watch Series 9', 'Smarter. Brighter. Mightier. With the new S9 chip, a brighter display, and the magical double tap gesture.', 'Case: 45mm Aluminum\r\nDisplay: Always-On Retina up to 2000 nits', 429.00, 45, 'apple_watch_s9.jpg', '2026-08-01 11:30:00'),
-(20, 6, 'Samsung', 'Galaxy Z Fold5', 'Unfold a massive screen and get more done. The Galaxy Z Fold5 is your portable powerhouse.', 'Main Display: 7.6-inch Dynamic AMOLED 2X\r\nCover Display: 6.2-inch\r\nProcessor: Snapdragon 8 Gen 2', 1799.00, 15, 'galaxy_z_fold5.jpg', '2026-08-01 11:35:00');
+INSERT INTO `products` (`id`, `category_id`, `brand`, `product_name`, `description`, `specifications`, `price`, `quantity`, `badge`, `is_featured`, `image`, `created_at`) VALUES
+(1, 1, 'Apple', 'iPhone 15 Pro Max', 'Forged in titanium and featuring the groundbreaking A17 Pro chip, a customizable Action button, and the most powerful iPhone camera system ever.', 'Display: 6.7-inch Super Retina XDR\r\nChip: A17 Pro\r\nStorage: 256GB\r\nCamera: 48MP Main | Ultra Wide | Telephoto', 1199.00, 50, 'NEW', 1, 'iphone_15_pro_max.jpg', '2026-08-01 10:00:00'),
+(2, 2, 'Apple', 'MacBook Pro 16"', 'The most advanced Mac laptop for demanding workflows. Powered by M3 Max for massive performance and capabilities.', 'Display: 16.2-inch Liquid Retina XDR\r\nChip: M3 Max\r\nMemory: 36GB\r\nStorage: 1TB SSD', 3499.00, 20, 'BEST SELLER', 1, 'macbook_pro_16.jpg', '2026-08-01 10:05:00'),
+(3, 3, 'Apple', 'iPad Pro 12.9"', 'The ultimate iPad experience with the most advanced display, M2 chip, and blazing-fast wireless connectivity.', 'Display: 12.9-inch Liquid Retina XDR\r\nChip: M2\r\nStorage: 512GB\r\nConnectivity: Wi-Fi + Cellular', 1299.00, 30, NULL, 0, 'ipad_pro_12_9.jpg', '2026-08-01 10:10:00'),
+(4, 4, 'Apple', 'Apple Watch Ultra 2', 'The most rugged and capable Apple Watch. Designed for outdoor adventures and supercharged workouts with a lightweight titanium case.', 'Case: 49mm Titanium\r\nDisplay: Always-On Retina up to 3000 nits\r\nWater Resistance: 100m', 799.00, 45, 'LIMITED', 1, 'apple_watch_ultra_2.jpg', '2026-08-01 10:15:00'),
+(5, 5, 'Apple', 'AirPods Pro (2nd Gen)', 'Re-engineered for even richer audio. Next-level Active Noise Cancellation and Adaptive Transparency reduce more external noise.', 'Audio: Spatial Audio with dynamic head tracking\r\nBattery: Up to 6 hours listening time\r\nCharging: MagSafe Charging Case', 249.00, 100, NULL, 0, 'airpods_pro_2.jpg', '2026-08-01 10:20:00'),
+(6, 6, 'Samsung', 'Galaxy S24 Ultra', 'Welcome to the era of mobile AI. With Galaxy S24 Ultra in your hands, you can unleash whole new levels of creativity and productivity.', 'Display: 6.8-inch Dynamic AMOLED 2X\r\nProcessor: Snapdragon 8 Gen 3\r\nCamera: 200MP Main\r\nS Pen: Built-in', 1299.00, 40, 'NEW', 1, 'galaxy_s24_ultra.jpg', '2026-08-01 10:25:00'),
+(7, 6, 'Google', 'Pixel 8 Pro', 'The all-pro phone engineered by Google. It\'s sleek, sophisticated, and packed with the latest AI features.', 'Display: 6.7-inch Super Actua\r\nProcessor: Google Tensor G3\r\nCamera: 50MP Main\r\nBattery: 5050 mAh', 999.00, 35, NULL, 0, 'pixel_8_pro.jpg', '2026-08-01 10:30:00'),
+(8, 7, 'Anker', 'Prime 20,000mAh Power Bank', 'Ultra-high capacity power bank with 200W total output, capable of charging two laptops simultaneously.', 'Capacity: 20,000mAh\r\nOutput: 200W Total (2x USB-C, 1x USB-A)\r\nDisplay: Smart Digital Display', 129.99, 80, NULL, 0, 'anker_prime_20k.jpg', '2026-08-01 10:35:00'),
+(9, 7, 'Apple', 'MagSafe Charger', 'The MagSafe Charger makes wireless charging a snap. The perfectly aligned magnets attach to your iPhone.', 'Output: Up to 15W\r\nConnection: USB-C', 39.00, 150, NULL, 0, 'magsafe_charger.jpg', '2026-08-01 10:40:00'),
+(10, 8, 'Sony', 'WH-1000XM5', 'Industry-leading noise cancelation optimized to you. Magnificent sound, engineered to perfection.', 'Battery: Up to 30 hours\r\nNoise Cancellation: Dual Noise Sensor technology\r\nMicrophone: 4 beamforming mics', 398.00, 25, 'BEST SELLER', 0, 'sony_wh1000xm5.jpg', '2026-08-01 10:45:00'),
+(11, 8, 'JBL', 'Flip 6', 'Bold sound for every adventure. The JBL Flip 6 delivers powerful JBL Original Pro Sound with exceptional clarity.', 'Waterproof: IP67\r\nBattery Life: Up to 12 hours\r\nOutput Power: 20W RMS', 129.95, 60, NULL, 0, 'jbl_flip_6.jpg', '2026-08-01 10:50:00'),
+(12, 9, 'Logitech', 'G Pro X Superlight', 'Less than 63 grams. Advanced low-latency LIGHTSPEED wireless. Sub-micron precision with HERO 25K sensor.', 'Weight: <63g\r\nSensor: HERO 25K\r\nBattery Life: 70 hours', 159.99, 40, NULL, 0, 'logitech_gpro_x.jpg', '2026-08-01 10:55:00'),
+(13, 9, 'Sony', 'PlayStation 5 Console', 'Experience lightning-fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback.', 'Storage: 825GB SSD\r\nOutput: Up to 4K 120Hz', 499.99, 15, 'LIMITED', 0, 'ps5_console.jpg', '2026-08-01 11:00:00'),
+(14, 10, 'Google', 'Nest Hub (2nd Gen)', 'Meet the second-gen Nest Hub from Google, the center of your helpful home. With a 7-inch display and improved speaker.', 'Display: 7-inch touchscreen\r\nFeatures: Sleep Sensing, Google Assistant', 99.99, 50, NULL, 0, 'nest_hub_2.jpg', '2026-08-01 11:05:00'),
+(15, 11, 'Garmin', 'Fenix 7X Pro', 'Ultimate multisport GPS smartwatch with a large 1.4” display, built-in LED flashlight and solar charging lens.', 'Display: 1.4-inch Memory-in-Pixel\r\nBattery: Up to 37 days (Solar)\r\nWater Rating: 10 ATM', 899.99, 20, NULL, 0, 'garmin_fenix_7x.jpg', '2026-08-01 11:10:00'),
+(16, 1, 'Apple', 'iPhone 15', 'Dynamic Island stays on top of it all. New 48MP Main camera. USB-C. All in a durable color-infused glass and aluminum design.', 'Display: 6.1-inch Super Retina XDR\r\nChip: A16 Bionic\r\nStorage: 128GB', 799.00, 60, NULL, 0, 'iphone_15.jpg', '2026-08-01 11:15:00'),
+(17, 2, 'Apple', 'MacBook Air M3', 'Lean. Mean. M3 machine. The MacBook Air breezes through work and play, now featuring the blazing-fast M3 chip.', 'Display: 13.6-inch Liquid Retina\r\nChip: M3\r\nMemory: 8GB\r\nStorage: 256GB SSD', 1099.00, 40, 'NEW', 0, 'macbook_air_m3.jpg', '2026-08-01 11:20:00'),
+(18, 3, 'Apple', 'iPad Air', 'Supercharged by M1. 10.9-inch Liquid Retina display. Supports Apple Pencil (2nd gen).', 'Display: 10.9-inch Liquid Retina\r\nChip: M1\r\nStorage: 64GB', 599.00, 50, NULL, 0, 'ipad_air.jpg', '2026-08-01 11:25:00'),
+(19, 4, 'Apple', 'Apple Watch Series 9', 'Smarter. Brighter. Mightier. With the new S9 chip, a brighter display, and the magical double tap gesture.', 'Case: 45mm Aluminum\r\nDisplay: Always-On Retina up to 2000 nits', 429.00, 45, NULL, 0, 'apple_watch_s9.jpg', '2026-08-01 11:30:00'),
+(20, 6, 'Samsung', 'Galaxy Z Fold5', 'Unfold a massive screen and get more done. The Galaxy Z Fold5 is your portable powerhouse.', 'Main Display: 7.6-inch Dynamic AMOLED 2X\r\nCover Display: 6.2-inch\r\nProcessor: Snapdragon 8 Gen 2', 1799.00, 15, 'EXCLUSIVE', 0, 'galaxy_z_fold5.jpg', '2026-08-01 11:35:00');
 
 -- --------------------------------------------------------
 
@@ -159,6 +161,24 @@ CREATE TABLE `order_items` (
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `setting_key` varchar(50) NOT NULL,
+  `setting_value` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
+('currency_symbol', '$');
 
 --
 -- Indexes for dumped tables
@@ -205,6 +225,12 @@ ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `order_id` (`order_id`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`setting_key`);
 
 --
 -- AUTO_INCREMENT for dumped tables

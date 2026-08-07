@@ -74,29 +74,38 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
                 <?php while($product = $products->fetch_assoc()): ?>
                 <div class="col">
                     <div class="product-card">
-                        <a href="<?= BASE_URL ?>product.php?id=<?= $product['id'] ?>">
-                            <div class="product-img-wrapper">
+                        <div class="product-img-wrapper">
+                            <?php if(!empty($product['badge'])): ?>
+                                <span class="product-badge"><?= htmlspecialchars($product['badge']) ?></span>
+                            <?php endif; ?>
+                            <a href="<?= BASE_URL ?>product.php?id=<?= $product['id'] ?>">
                                 <?php if($product['image']): ?>
                                 <img src="<?= BASE_URL ?>assets/uploads/products/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>" onerror="this.src='https://placehold.co/400x400/eeeeee/cccccc?text=No+Image'">
                                 <?php else: ?>
                                 <img src="https://placehold.co/400x400/eeeeee/cccccc?text=No+Image" alt="Placeholder">
                                 <?php endif; ?>
+                            </a>
+                            <div class="product-actions">
+                                <button type="button" class="action-btn quick-view-btn" data-id="<?= $product['id'] ?>" title="Quick View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="m-0">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="action-btn" title="Add to Bag">
+                                        <i class="bi bi-bag"></i>
+                                    </button>
+                                </form>
                             </div>
-                        </a>
+                        </div>
+                        
                         <div class="product-info">
                             <span class="product-brand"><?= htmlspecialchars($product['brand']) ?></span>
                             <a href="<?= BASE_URL ?>product.php?id=<?= $product['id'] ?>" class="product-title">
                                 <?= htmlspecialchars($product['product_name']) ?>
                             </a>
-                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
-                                <span class="product-price"><?= format_price($product['price']) ?></span>
-                                <form action="<?= BASE_URL ?>cart-action.php" method="POST" class="add-to-cart-form m-0">
-                                    <input type="hidden" name="action" value="add">
-                                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-outline-primary btn-sm">Add</button>
-                                </form>
-                            </div>
+                            <span class="product-price"><?= format_price($product['price']) ?></span>
                         </div>
                     </div>
                 </div>

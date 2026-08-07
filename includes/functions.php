@@ -21,7 +21,9 @@ function require_admin() {
 }
 
 function format_price($price) {
-    return '$' . number_format($price, 2);
+    global $global_settings;
+    $symbol = $global_settings['currency_symbol'] ?? '$';
+    return $symbol . number_format($price, 2);
 }
 
 function get_cart_count() {
