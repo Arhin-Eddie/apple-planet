@@ -16,11 +16,22 @@ $categories = $stmt_cat->get_result();
 ?>
 
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section text-start" style="padding: 4rem 0;">
     <div class="container fade-in-up stagger-1">
-        <h1 class="hero-title">Welcome to Apple Planet</h1>
-        <p class="hero-subtitle">Your premier destination for independent, multi-brand electronics. Discover the latest in tech.</p>
-        <a href="<?= BASE_URL ?>products.php" class="btn btn-primary btn-lg px-5">Shop Now</a>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="hero-title">Welcome to Apple Planet</h1>
+                <p class="hero-subtitle ms-0 mb-4" style="max-width: 100%;">Your premier destination for independent, multi-brand electronics. Discover the latest in tech.</p>
+                <div class="d-flex gap-3">
+                    <a href="<?= BASE_URL ?>products.php" class="btn btn-primary btn-lg px-4 py-2">Shop Now</a>
+                    <a href="<?= BASE_URL ?>products.php" class="btn btn-outline-primary btn-lg px-4 py-2">Explore</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <!-- Premium Phone/Device Image Placeholder -->
+                <img src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=800&auto=format&fit=crop" class="img-fluid rounded-4 shadow-lg" alt="Premium Electronics" style="max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
     </div>
 </section>
 
